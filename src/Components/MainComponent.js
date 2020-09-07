@@ -8,7 +8,7 @@ import FooterComponent from './FooterComponent';
 import { AuthContext } from '../Contexts/AuthContext';
 
 function MainComponent(props) {
-    const {signedIn,setSignedIn} = useContext(AuthContext)
+    const {signedIn} = useContext(AuthContext)
     return (
         <div>
             <Header/>
