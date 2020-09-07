@@ -41,8 +41,6 @@ const Header = (props) => {
           {signedIn ? <NavLink to='/login' style={{color:'black'}} onClick={signOut}>Log Out</NavLink> : null}
           {!signedIn ? <NavLink style={{color:'black'}}  to='/login'>Login</NavLink>:null}
           
-          
-          
         </Collapse>
       </Navbar>
     </div>
