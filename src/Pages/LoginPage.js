@@ -1,8 +1,9 @@
 import React, { useState, useContext } from 'react';
-import { Button, Form, FormGroup, Label, Input, FormText, Jumbotron } from 'reactstrap';
+import { Button, Form, FormGroup, Input, FormText, Jumbotron } from 'reactstrap';
 import { apiRoutes } from '../GlobalConstants/ApiRoutes';
 import { post } from '../GlobalConstants/ApiCalls';
 import { Redirect, Link } from 'react-router-dom';
+import { AuthContext } from '../Contexts/AuthContext';
 
 const Login = (props) => {
 
@@ -11,7 +12,7 @@ const [errorMessage,setErrorMessage]=useState('')
 const [userNameOrEmail,setUserNameOrEmail] = useState('')
 const [passward,setPassward] = useState('')
 
-// const {signedIn,setSignedIn}= useContext(AuthContext)
+const {signedIn,setSignedIn}= useContext(AuthContext)
 
 const hundleFormSubmission = async(e) => {
   e.preventDefault()
@@ -32,7 +33,7 @@ const hundleFormSubmission = async(e) => {
     localStorage.setItem("TOKEN",data.response.token);
     localStorage.setItem("USERID",data.response.userId);
     setRedirect('profil');
-    
+    setSignedIn(true)
       
   }
 
