@@ -4,29 +4,25 @@ import {
   Navbar,
   NavbarToggler,
   NavbarBrand,
-  Nav,
-  NavItem,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
+  Nav
 } from 'reactstrap';
 import { NavLink,Link } from 'react-router-dom';
-import { AuthContext } from '../Contexts/AuthContext';
+import { signedout } from '../Redux/Actions';
+import { useDispatch, connect } from 'react-redux';
 
 const Header = (props) => {
 
-  const {signedIn,setSignedIn}= useContext(AuthContext)
+  const dispatch=useDispatch()
 
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
 
   const signOut = async() => {
-    await localStorage.removeItem('TOKEN')
-    await localStorage.removeItem('USERID')
-    setSignedIn(false)
+    await dispatch(signedout())
 }
+
+const {signedIn}=props
 
   return (
     <div>
@@ -47,4 +43,8 @@ const Header = (props) => {
   );
 }
 
-export default Header;
+const mapStateToProps = state => ({
+  signedIn:state.signedIn.signedIn
+})
+
+export default connect(mapStateToProps,null) (Header);

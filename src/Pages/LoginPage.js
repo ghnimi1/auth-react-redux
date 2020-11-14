@@ -4,70 +4,46 @@ import { apiRoutes } from '../GlobalConstants/ApiRoutes';
 import { post } from '../GlobalConstants/ApiCalls';
 import { Redirect, Link } from 'react-router-dom';
 import { AuthContext } from '../Contexts/AuthContext';
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { signedin } from '../Redux/Actions';
 
 const Login = (props) => {
-
-    const [redirect,setRedirect]=useState('')
-const [errorMessage,setErrorMessage]=useState('')
-const [userNameOrEmail,setUserNameOrEmail] = useState('')
-const [passward,setPassward] = useState('')
-
-const {signedIn,setSignedIn}= useContext(AuthContext)
-
-const hundleFormSubmission = async(e) => {
-  e.preventDefault()
- 
-  var data = await post(apiRoutes.SignIn,{
-      userNameOrEmail,
-      passward
-  })
-
-
-  if (data.errors) {
-      var errorstring = "";
-      data.errors.map(error => errorstring = errorstring + error + '\n\r');
-
-      setErrorMessage(errorstring);
-  }
-  else {
-    localStorage.setItem("TOKEN",data.response.token);
-    localStorage.setItem("USERID",data.response.userId);
-    setRedirect('profil');
-    setSignedIn(true)
-      
-  }
-
-  console.log(data);
-  
-}
-
-if(redirect)
-{
-  return(
-      <Redirect to={redirect}/>
-  )
-}
+    const [errorMessage, setErrorMessage] = useState('')
+    const [userNameOrEmail, setUserNameOrEmail] = useState('')
+    const [passward, setPassward] = useState('')
+    const user = useSelector(state => state.signedIn.user)
+    const errors = useSelector(state => state.signedIn.errors)
+    const dispatch = useDispatch()
+    const hundleFormSubmission = (e) => {
+        e.preventDefault()
+        dispatch(signedin({ userNameOrEmail, passward }))
+        if (user?.success === true) {
+            window.location.replace('/profil')
+        } else {
+            setErrorMessage(errors)
+        }
+    }
 
     return (
-        <Form className='container' style={{ textAlign: 'center',marginTop:'50px' }}>
+        <Form className='container' style={{ textAlign: 'center', marginTop: '50px' }}>
             <Jumbotron>
-                <FormText 
-                style={{ textAlign: 'center', fontWeight: 'bold', fontSize: "30px" }}>Login</FormText>
+                <FormText
+                    style={{ textAlign: 'center', fontWeight: 'bold', fontSize: "30px" }}>Login</FormText>
                 <FormGroup>
-                    <Input type="email" name="email" 
-                    id="exampleEmail" placeholder="Email" 
-                    value={userNameOrEmail} onChange={(e) => setUserNameOrEmail(e.target.value)}/>
+                    <Input type="email" name="email"
+                        id="exampleEmail" placeholder="Email"
+                        value={userNameOrEmail} onChange={(e) => setUserNameOrEmail(e.target.value)} />
                 </FormGroup>
                 <FormGroup>
                     <Input type="password" name="password"
-                     id="examplePassword" placeholder="Password" 
-                     value={passward} onChange={(e) => setPassward(e.target.value)}/>
+                        id="examplePassword" placeholder="Password"
+                        value={passward} onChange={(e) => setPassward(e.target.value)} />
                 </FormGroup>
-                <p style={{color:'red'}}>{errorMessage}</p>
-                <Button style={{marginRight:"15px"}} onClick={hundleFormSubmission}>Log In</Button>
+                <p style={{ color: 'red' }}>{errorMessage}</p>
+                <Button style={{ marginRight: "15px" }} onClick={hundleFormSubmission}>Log In</Button>
                 <Link to='/register'>Create New Account</Link>
-                </Jumbotron>
-                
+            </Jumbotron>
+
         </Form>
     );
 }

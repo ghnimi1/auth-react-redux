@@ -5,21 +5,18 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import Register from '../Pages/RegisterPage';
 import ProfilPage from '../Pages/ProfilPage';
 import FooterComponent from './FooterComponent';
-import { AuthContext } from '../Contexts/AuthContext';
+import PrivateRoute from '../PrivateRoute';
 
 function MainComponent(props) {
-    const {signedIn} = useContext(AuthContext)
     return (
         <div>
-            <Header/>
+            <Header />
             <Switch>
-                {!signedIn ? <Route path='/register' exact component={Register}/> : null}
-               <Route path='/profil' exact component={ProfilPage}/>
-                {!signedIn ? <Route path='/login' exact component={Login}/> : null}
-              
-              <Redirect to='/login'/>
+                <Route path='/register' exact component={Register} />
+                <PrivateRoute path='/profil' exact component={ProfilPage} />
+                <Route path='/login' exact component={Login} />
             </Switch>
-            <FooterComponent/>
+            <FooterComponent />
         </div>
     );
 }

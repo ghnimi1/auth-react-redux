@@ -1,33 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, {  useEffect } from 'react';
 import './App.css';
 import MainComponent from './Components/MainComponent';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthContext } from './Contexts/AuthContext';
-import { authPost } from './GlobalConstants/ApiCalls';
+import { connect, useDispatch } from 'react-redux';
+import { signedin } from './Redux/Actions';
 import { apiRoutes } from './GlobalConstants/ApiRoutes';
 
 function App(props) {
-  const [signedIn,setSignedIn]=useState(false)
-
-  const TokenLogin = async()=>{
+      
+  const dispatch=useDispatch()
+  const TokenLogin = async () => {
     const token = localStorage.getItem('TOKEN')
-    if (token) {
-      var data = await authPost(apiRoutes.TokenLogin, {});
-
-      if (data.success) {
-        setSignedIn(true);
-        await localStorage.setItem("TOKEN", data.response.token);
-        await localStorage.setItem("USERID", data.response.userId);
-      }
+    if(token){
+          dispatch(signedin())
     }
-}
+  }
 
-useEffect(()=>{
-   TokenLogin()
-},[apiRoutes.TokenLogin])
+  useEffect(()=>{  
+    TokenLogin()
+ },[apiRoutes.TokenLogin])
 
+const {signedIn}=props
   return (
-  <AuthContext.Provider value={{signedIn,setSignedIn}}>
+  <AuthContext.Provider value={{signedIn}}>
     <BrowserRouter>
       <MainComponent />
     </BrowserRouter> 
@@ -35,4 +31,8 @@ useEffect(()=>{
   );
 }
 
-export default App;
+const mapStateToProps = state => ({
+  signedIn:state.signedIn.signedIn,
+})
+
+export default connect(mapStateToProps,null) (App);
